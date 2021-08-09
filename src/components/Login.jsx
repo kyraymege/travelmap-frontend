@@ -30,12 +30,12 @@ const Login = ({setShowLogin,myStorage,setCurrentUser}) => {
         <div className="loginContainer">
             <div className="logo">
                 <Room />
-                AymPin
+                AymPin 
                 </div>
                 <form onSubmit={handleSubmit}>
                     <input type="text" placeholder="username" ref={usernameRef}/>
                     <input type="password" placeholder="password" ref={passwordRef}/>
-                    <button className="loginBtn" type="submit">Login</button>
+                    <button className="loginBtn" type="submit">Login </button>
                     {error &&
                         <span className="failure">Something went wrong!</span>
                     }                    
