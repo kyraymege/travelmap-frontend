@@ -10,15 +10,15 @@ import "./app.css"
 
 function App() {
   const myStorage = window.localStorage;
-  const [currentUser,setCurrentUser] = useState(myStorage.getItem("user"));
+  const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   const [pins, setPins] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
-  const [showRegister,setShowRegister] = useState(false);
-  const [showLogin,setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const [viewport, setViewport] = useState({
     width: "100vw",
@@ -46,11 +46,15 @@ function App() {
   }
 
   const handleAddClick = (e) => {
+    if(!currentUser){
+      alert("You must login for marker a place!");
+    }else{
     const [long, lat] = e.lngLat;
     setNewPlace({
       lat,
       long,
     })
+  }
   }
 
   const handleSubmit = async (e) => {
@@ -74,9 +78,26 @@ function App() {
 
   }
 
-  const handleLogout = () =>{
+  const handleLogout = () => {
     myStorage.removeItem("user");
     setCurrentUser(null);
+  }
+
+  const handleDeletePin = async (id) => {
+    try {
+      await axios.delete(`/pins/${id}`);
+      const getPins = async () => {
+        try {
+          const res = await axios.get("/pins");
+          setPins(res.data);
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      getPins();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -87,7 +108,7 @@ function App() {
         onViewportChange={nextViewport => setViewport(nextViewport)}
         mapStyle="mapbox://styles/kyraymege/cks4v03u87xfn18lik8nu9yjv"
         onDblClick={handleAddClick}
-        transitionDuration="200"
+        transitionDuration="200"        
       >
         {pins.map(p => (
           <>
@@ -120,6 +141,9 @@ function App() {
                   <label>Information</label>
                   <span className="username">Created by <b>{p.username}</b></span>
                   <span className="date">{format(p.createdAt)}</span>
+                  {p.username === currentUser &&
+                    <button className="deleteButton" onClick={() => { handleDeletePin(p._id) }} >  Delete </button>
+                  }
                 </div>
               </Popup>
             }
@@ -154,10 +178,10 @@ function App() {
         )}
         {currentUser ? (<button className="button logout" onClick={handleLogout}>Log out</button>) : (
           <div className="buttons">
-            <button className="button login" onClick={()=>setShowLogin(true)}>Login</button>
-            <button className="button register" onClick={()=>setShowRegister(true)}>Register</button>
+            <button className="button login" onClick={() => setShowLogin(true)}>Login</button>
+            <button className="button register" onClick={() => setShowRegister(true)}>Register</button>
           </div>
-          )}
+        )}
 
         {showRegister && <Register setShowRegister={setShowRegister} />}
         {showLogin && <Login setShowLogin={setShowLogin} myStorage={myStorage} setCurrentUser={setCurrentUser} />}

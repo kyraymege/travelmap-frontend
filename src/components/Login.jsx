@@ -20,7 +20,6 @@ const Login = ({setShowLogin,myStorage,setCurrentUser}) => {
             myStorage.setItem('user', res.data.username);
             setCurrentUser(res.data.username);
             setShowLogin(false);
-            setError(false);
         } catch (error) {
             setError(true);
         }

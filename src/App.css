@@ -83,3 +83,11 @@ input::placeholder, textarea::placeholder{
     top: 10px;
     right: 10px;
 }
+
+.deleteButton{
+  background-color: red;
+  margin-top: 10px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
